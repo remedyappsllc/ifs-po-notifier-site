@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFS PO Notifier — Never Miss a Purchase Order Approval</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2ed;
+    --cream: #ede9e2;
+    --accent: #1a3a6b;
+    --accent-light: #2d5aa0;
+    --gold: #c8973a;
+    --muted: #6b6560;
+    --border: #d4cfc8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(245, 242, 237, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: -0.3px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .btn-nav {
+    background: var(--accent);
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: background 0.2s !important;
+  }
+
+  .btn-nav:hover { background: var(--accent-light) !important; color: white !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 48px 80px;
+    gap: 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(42px, 5vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -1px;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 460px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--ink); }
+
+  /* MOCK NOTIFICATION */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-end;
+  }
+
+  .mock-notification {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    width: 320px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    animation: slideIn 0.6s ease both;
+  }
+
+  .mock-notification:nth-child(2) { animation-delay: 0.15s; margin-right: 40px; }
+  .mock-notification:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .notif-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .notif-body { flex: 1; }
+
+  .notif-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .notif-msg {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .notif-time {
+    font-size: 11px;
+    color: var(--border);
+    flex-shrink: 0;
+  }
+
+  .notif-badge {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+
+  /* SOCIAL PROOF BAR */
+  .proof-bar {
+    background: var(--cream);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .proof-item {
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .proof-item strong { color: var(--ink); font-weight: 500; }
+
+  /* HOW IT WORKS */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 48px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 64px;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .step {
+    background: var(--paper);
+    padding: 40px 36px;
+    position: relative;
+  }
+
+  .step-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    color: var(--cream);
+    line-height: 1;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .step h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  .step p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .feature {
+    background: var(--paper);
+    padding: 40px;
+  }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--cream);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .feature h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .feature p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* PRICING */
+  .pricing-section {
+    background: var(--cream);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 100px 48px;
+  }
+
+  .pricing-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .pricing-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 40px;
+  }
+
+  .pricing-card.featured {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .plan-name {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .pricing-card.featured .plan-name { color: rgba(255,255,255,0.6); }
+
+  .price-amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-period {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .pricing-card.featured .price-period { color: rgba(255,255,255,0.6); }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price-features li {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+  }
+
+  .pricing-card.featured .price-features li { color: rgba(255,255,255,0.8); }
+
+  .price-features li::before {
+    content: '✓';
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .pricing-card.featured .price-features li::before { color: #7dd3b0; }
+
+  .btn-buy {
+    display: block;
+    text-align: center;
+    padding: 14px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-buy-outline {
+    border: 1px solid var(--border);
+    color: var(--ink);
+    background: transparent;
+  }
+
+  .btn-buy-outline:hover { background: var(--cream); }
+
+  .btn-buy-white {
+    background: white;
+    color: var(--accent);
+  }
+
+  .btn-buy-white:hover { background: var(--cream); transform: translateY(-1px); }
+
+  /* TESTIMONIAL */
+  .testimonial-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 48px;
+    text-align: center;
+  }
+
+  blockquote {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+
+  .testimonial-author {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .testimonial-author strong {
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* FAQ */
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 64px;
+    margin-top: 64px;
+  }
+
+  .faq-item h3 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .faq-item p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* CTA */
+  .cta-section {
+    background: var(--accent);
+    padding: 100px 48px;
+    text-align: center;
+  }
+
+  .cta-section h2 {
+    color: white;
+    margin-bottom: 16px;
+  }
+
+  .cta-section p {
+    color: rgba(255,255,255,0.65);
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+
+  .btn-cta {
+    background: white;
+    color: var(--accent);
+    padding: 16px 36px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+
+  .btn-cta:hover { background: var(--cream); transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    color: white;
+    font-size: 16px;
+  }
+
+  footer a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: white; }
+
+  .footer-links { display: flex; gap: 24px; }
+
+  /* DIVIDER */
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 48px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 48px; }
+    .hero-visual { align-items: center; }
+    .mock-notification { width: 100%; max-width: 320px; }
+    .mock-notification:nth-child(2) { margin-right: 0; }
+    .section { padding: 64px 24px; }
+    .steps { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .pricing-cards { grid-template-columns: 1fr; }
+    .faq-grid { grid-template-columns: 1fr; }
+    .proof-bar { padding: 20px 24px; gap: 24px; }
+    .pricing-section { padding: 64px 24px; }
+    .cta-section { padding: 64px 24px; }
+    footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IFS PO Notifier</div>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#pricing" class="btn-nav">Get started</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section style="background: var(--paper);">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">For IFS Cloud users</div>
+      <h1>Know the moment your PO<br>gets <em>released</em></h1>
+      <p class="hero-sub">
+        Stop refreshing IFS all day. IFS PO Notifier watches your purchase orders in the background and fires an instant browser notification the moment one moves to Released.
+      </p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">Start free trial — 30 days</a>
+        <a href="#how-it-works" class="btn-ghost">See how it works →</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="mock-notification">
+        <div class="notif-icon">📋</div>
+        <div class="notif-body">
+          <div class="notif-title">PO Released — P20179</div>
+          <div class="notif-msg">Vendor: RS Americas Inc · USD</div>
+          <span class="notif-badge">Released</span>
+        </div>
+        <div class="notif-time">just now</div>
+      </div>
+      <div class="mock-notification">
+        <div class="notif-icon">📋</div>
+        <div class="notif-body">
+          <div class="notif-title">PO Released — P20156</div>
+          <div class="notif-msg">Vendor: ARC / RK Digital · USD</div>
+          <span class="notif-badge">Released</span>
+        </div>
+        <div class="notif-time">4 min ago</div>
+      </div>
+      <div class="mock-notification">
+        <div class="notif-icon">📋</div>
+        <div class="notif-body">
+          <div class="notif-title">PO Released — P20143</div>
+          <div class="notif-msg">Vendor: Delta Components · USD</div>
+          <span class="notif-badge">Released</span>
+        </div>
+        <div class="notif-time">12 min ago</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROOF BAR -->
+<div class="proof-bar">
+  <div class="proof-item">✓ Works with <strong>IFS Cloud</strong></div>
+  <div class="proof-item">✓ <strong>No IT involvement</strong> required</div>
+  <div class="proof-item">✓ Set up in <strong>under 5 minutes</strong></div>
+  <div class="proof-item">✓ Runs on <strong>Chrome &amp; Edge</strong></div>
+  <div class="proof-item">✓ <strong>30-day</strong> free trial</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="section">
+  <div class="section-label">How it works</div>
+  <h2>Three steps to<br>instant PO visibility</h2>
+  <p class="section-sub">No configuration files. No API keys to manage. No IT ticket required.</p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h3>Install the extension</h3>
+      <p>Add IFS PO Notifier to Chrome or Edge from the Web Store. Enter your licence key. Takes under two minutes.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h3>Log into IFS as normal</h3>
+      <p>The extension detects your IFS session automatically. Enter your buyer code once. That is it — no passwords stored, no extra login.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h3>Get notified instantly</h3>
+      <p>The extension checks your Planned POs every 5 minutes. The moment one moves to Released, a notification appears in the corner of your screen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background: var(--cream); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 100px 0;">
+  <div class="section" style="padding-top: 0; padding-bottom: 0;">
+    <div class="section-label">Features</div>
+    <h2>Built for IFS buyers<br>who have better things to do</h2>
+    <p class="section-sub">Every feature exists because a real IFS user needed it.</p>
+
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">🔔</div>
+        <h3>Instant browser notifications</h3>
+        <p>Real notifications in the corner of your screen — works even when IFS is not your active tab. Click the notification to jump straight to the PO.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔍</div>
+        <h3>Filtered to your POs only</h3>
+        <p>Enter your buyer code once and the extension watches only your purchase orders. No noise from other buyers' activity.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>Automatic session detection</h3>
+        <p>Log into IFS as you always do. The extension detects your session silently and starts working — no separate login, no configuration.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <h3>Secure by design</h3>
+        <p>Your IFS credentials are never stored or transmitted. The extension uses your existing browser session — the same security model as IFS Aurena itself.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌐</div>
+        <h3>Chrome and Edge</h3>
+        <p>Works on both Chrome and Microsoft Edge — the two browsers most commonly used with IFS Cloud in enterprise environments.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Live dashboard popup</h3>
+        <p>Click the extension icon to see how many POs you are watching, which are Planned, when the last check ran, and trigger an immediate check.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="pricing-inner">
+    <div class="section-label" style="text-align:center;">Pricing</div>
+    <h2 style="text-align:center;">Simple, honest pricing</h2>
+    <p style="text-align:center; color: var(--muted); font-size:16px; margin-bottom: 0;">One price. Everything included. Cancel any time.</p>
+
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="plan-name">Free trial</div>
+        <div class="price-amount">$0</div>
+        <div class="price-period">30 days, no credit card required</div>
+        <ul class="price-features">
+          <li>Full access to all features</li>
+          <li>PO Released notifications</li>
+          <li>Buyer code filtering</li>
+          <li>Chrome and Edge support</li>
+          <li>Email support</li>
+        </ul>
+        <a href="https://yourwebsite.com/download" class="btn-buy btn-buy-outline">Download and try free</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="plan-name">Annual licence</div>
+        <div class="price-amount">$299</div>
+        <div class="price-period">per user / per year · billed annually</div>
+        <ul class="price-features">
+          <li>Everything in free trial</li>
+          <li>Unlimited PO monitoring</li>
+          <li>Automatic annual renewal</li>
+          <li>Priority email support</li>
+          <li>Licence key delivered instantly</li>
+        </ul>
+        <a href="https://buy.stripe.com/yourlink" class="btn-buy btn-buy-white">Buy now — $299/yr</a>
+      </div>
+    </div>
+
+    <p style="text-align:center; font-size:13px; color:var(--muted); margin-top:24px;">
+      Need licences for a team? <a href="mailto:hello@yourcompany.com" style="color:var(--accent); text-decoration:none;">Contact us for volume pricing →</a>
+    </p>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial-section">
+  <div class="divider"></div>
+  <blockquote>
+    "I used to check IFS every 20 minutes waiting for POs to be released. Now I just get a notification and deal with it immediately. It has completely changed how I work."
+  </blockquote>
+  <div class="testimonial-author">
+    <strong>Procurement Manager</strong>
+    IFS Cloud customer, manufacturing sector
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background: var(--cream); border-top: 1px solid var(--border); padding: 100px 0;">
+  <div class="section" style="padding-top: 0; padding-bottom: 0;">
+    <div class="section-label">FAQ</div>
+    <h2>Common questions</h2>
+
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h3>Does my IT team need to do anything?</h3>
+        <p>No. The extension installs from the Chrome Web Store like any other browser extension. No server changes, no API configuration, no IFS customisation required.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Which version of IFS does it support?</h3>
+        <p>IFS Cloud (all versions using IFS Aurena). The extension uses the standard IFS OData API which is available on all IFS Cloud installations.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Is my IFS data secure?</h3>
+        <p>Yes. The extension reads data using your existing IFS browser session — the same way IFS Aurena itself works. No credentials are stored or transmitted to any third party.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Can I use it on multiple computers?</h3>
+        <p>Yes. One licence key works on any computer you install the extension on. Install it on your laptop and desktop with the same key.</p>
+      </div>
+      <div class="faq-item">
+        <h3>What happens when my trial ends?</h3>
+        <p>You will see a prompt to enter a licence key when you open the extension. Your IFS system and data are completely unaffected — only the notifications pause.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Do you offer refunds?</h3>
+        <p>Yes — 30-day money back guarantee, no questions asked. Email us and we will process your refund the same day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to stop refreshing IFS?</h2>
+  <p>Join buyers who get notified the moment their POs are released.</p>
+  <a href="#pricing" class="btn-cta">Start your free 30-day trial</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">IFS PO Notifier</div>
+  <div class="footer-links">
+    <a href="mailto:hello@yourcompany.com">Support</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+  <div style="font-size:13px;">© 2026 Your Company Name</div>
+</footer>
+
+</body>
+</html>
