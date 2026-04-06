@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Remedy Apps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2ed;
+    --accent: #1a3a6b;
+    --muted: #6b6560;
+    --border: #d4cfc8;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); color:var(--ink); font-family:'DM Sans',sans-serif; font-weight:300; line-height:1.7; }
+  nav { padding:20px 48px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .nav-logo { font-family:'DM Serif Display',serif; font-size:18px; color:var(--accent); text-decoration:none; }
+  nav a { font-size:13px; color:var(--muted); text-decoration:none; }
+  nav a:hover { color:var(--ink); }
+  .container { max-width:720px; margin:0 auto; padding:64px 48px 100px; }
+  h1 { font-family:'DM Serif Display',serif; font-size:40px; letter-spacing:-0.5px; margin-bottom:8px; }
+  .updated { font-size:13px; color:var(--muted); margin-bottom:48px; }
+  h2 { font-family:'DM Serif Display',serif; font-size:22px; margin:40px 0 12px; color:var(--accent); }
+  h3 { font-size:15px; font-weight:500; margin:24px 0 8px; }
+  p { font-size:15px; color:#334155; margin-bottom:14px; line-height:1.75; }
+  ul { margin:0 0 14px 20px; }
+  ul li { font-size:15px; color:#334155; margin-bottom:6px; line-height:1.6; }
+  .highlight { background:#f0f7ff; border-left:3px solid var(--accent); padding:14px 18px; border-radius:0 6px 6px 0; margin:20px 0; font-size:14px; color:#334155; line-height:1.65; }
+  footer { border-top:1px solid var(--border); padding:32px 48px; text-align:center; font-size:13px; color:var(--muted); }
+  @media (max-width:600px) {
+    nav { padding:16px 24px; }
+    .container { padding:48px 24px 80px; }
+    footer { padding:24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Remedy Apps</a>
+  <a href="index.html">← Back to products</a>
+</nav>
+
+<div class="container">
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: April 2026</div>
+
+  <div class="highlight">
+    This privacy policy covers two Chrome extensions published by Remedy Apps: <strong>IFS PO Notifier</strong> and <strong>IFS Smart Notes</strong>. Please read the sections relevant to the product you are using.
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>Remedy Apps is an independent software publisher. We build Chrome extensions that add functionality to IFS Cloud. We are not affiliated with, endorsed by, or officially connected to IFS AB.</p>
+  <p>For privacy enquiries contact us at: <strong>hello@remedyapps.io</strong></p>
+
+  <h2>2. IFS PO Notifier — data we collect</h2>
+
+  <h3>What we store locally on your device</h3>
+  <ul>
+    <li>Your IFS Cloud base URL — to identify which IFS installation to monitor</li>
+    <li>Your IFS session cookie name — to detect when you are logged in</li>
+    <li>Your buyer code — to filter purchase orders to your name only</li>
+    <li>A snapshot of your current purchase orders — stored locally to detect status changes</li>
+    <li>Your licence key and activation status</li>
+  </ul>
+
+  <h3>What we store on our servers</h3>
+  <ul>
+    <li>Your licence key, email address, and Stripe customer ID — to validate your subscription</li>
+    <li>Your licence expiry date</li>
+  </ul>
+
+  <h3>What we do NOT collect</h3>
+  <ul>
+    <li>Your IFS username or password</li>
+    <li>The contents of your purchase orders beyond what is needed to detect status changes</li>
+    <li>Any data from IFS Cloud beyond purchase order status for your buyer code</li>
+    <li>Browsing history or activity outside of IFS Cloud</li>
+  </ul>
+
+  <h2>3. IFS Smart Notes — data we collect</h2>
+
+  <h3>What we store on our servers</h3>
+  <p>IFS Smart Notes stores data on a secure PostgreSQL database hosted by Railway (railway.app) on servers in the United States. The following data is stored:</p>
+  <ul>
+    <li><strong>Note text</strong> — the content of notes you and your colleagues write</li>
+    <li><strong>IFS record identifiers</strong> — customer numbers, supplier codes, part numbers etc — used to associate notes with the correct IFS record</li>
+    <li><strong>Your IFS username</strong> — displayed as the note author so colleagues know who wrote each note</li>
+    <li><strong>Timestamps</strong> — when each note was created</li>
+    <li><strong>Your company's IFS Cloud URL</strong> — used to scope notes to your company only. Other companies cannot see your notes.</li>
+    <li><strong>Data agreement record</strong> — who accepted the data agreement and when</li>
+    <li><strong>Licence information</strong> — your licence key, email address, and activation details</li>
+  </ul>
+
+  <h3>Who can see your notes</h3>
+  <p>Notes are scoped to your company — identified by your IFS Cloud URL. All users at your company who have IFS Smart Notes installed will see the same notes. Users at other companies cannot see your notes.</p>
+
+  <h3>What we do NOT collect</h3>
+  <ul>
+    <li>Your IFS username or password</li>
+    <li>Any IFS data beyond the record identifier shown in the page header</li>
+    <li>Browsing history or activity outside of IFS Cloud</li>
+    <li>Personal data beyond what is listed above</li>
+  </ul>
+
+  <h2>4. How we use your data</h2>
+  <ul>
+    <li>To provide the functionality of the extension you have purchased</li>
+    <li>To validate your licence and process renewals via Stripe</li>
+    <li>To deliver your licence key by email via Resend</li>
+    <li>To scope shared notes to your company (IFS Smart Notes only)</li>
+  </ul>
+  <p>We do not sell your data to third parties. We do not use your data for advertising.</p>
+
+  <h2>5. Third party services</h2>
+  <p>We use the following third party services to operate our products:</p>
+  <ul>
+    <li><strong>Stripe</strong> (stripe.com) — payment processing and subscription management. Stripe's privacy policy applies to payment data.</li>
+    <li><strong>Railway</strong> (railway.app) — server hosting and PostgreSQL database for IFS Smart Notes. Data is stored on servers in the United States.</li>
+    <li><strong>Resend</strong> (resend.com) — transactional email delivery for licence keys.</li>
+  </ul>
+
+  <h2>6. Data retention</h2>
+  <ul>
+    <li><strong>IFS PO Notifier</strong> — licence data is retained for the duration of your subscription plus 90 days.</li>
+    <li><strong>IFS Smart Notes</strong> — notes and company data are retained for the duration of your subscription plus 90 days. You can delete individual notes at any time by clicking the delete button on the note.</li>
+  </ul>
+
+  <h2>7. Your rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Request a copy of the data we hold about you</li>
+    <li>Request deletion of all data associated with your company or account</li>
+    <li>Delete individual notes at any time within the IFS Smart Notes extension</li>
+    <li>Cancel your subscription at any time</li>
+  </ul>
+  <p>To exercise any of these rights email us at <strong>hello@remedyapps.io</strong> and we will respond within 5 business days.</p>
+
+  <h2>8. Security</h2>
+  <p>We take reasonable measures to protect your data including encrypted connections (HTTPS) for all data in transit, and secure database hosting via Railway. Your IFS credentials are never stored or transmitted by our extensions — we use only your existing IFS browser session.</p>
+
+  <h2>9. Children</h2>
+  <p>Our extensions are business software intended for use by adults in a professional context. We do not knowingly collect data from children under 16.</p>
+
+  <h2>10. Changes to this policy</h2>
+  <p>We may update this privacy policy from time to time. We will notify active customers of material changes by email. The date at the top of this page reflects when the policy was last updated.</p>
+
+  <h2>11. Contact</h2>
+  <p>For any privacy questions or requests contact us at <strong>hello@remedyapps.io</strong></p>
+
+</div>
+
+<footer>
+  © 2026 Remedy Apps · Not affiliated with IFS AB · <a href="index.html" style="color:inherit;">Products</a>
+</footer>
+
+</body>
+</html>
